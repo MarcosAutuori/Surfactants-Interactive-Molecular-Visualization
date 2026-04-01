@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Surfactants – Interactive Molecular Visualization</title>
+
+  <style>
+    body { font-family: Arial; }
+    h3 { margin-top: 20px; }
+    button { margin: 4px; padding: 8px; }
+    .disabled { opacity: 0.5; pointer-events: none; }
+  </style>
+</head>
+
+<body>
+
+<h2>Surfactants – Interactive Molecular Visualization</h2>
+<p><i>by Prof. Marcos Autuori</i></p>
+
+<!-- MANUAL INPUT -->
+<input type="text" id="smiles" placeholder="Enter SMILES">
+<button onclick="definirMolManual()">Select</button>
+
+<p id="status"><b>No molecule selected</b></p>
+
+<!-- ANIONIC -->
+<h3>Anionic</h3>
+<button onclick="setMol('CCCCCCCCCCCCOS(=O)(=O)[O-]')">Sodium dodecyl sulfate (SDS)</button>
+<button onclick="setMol('CCCCCCCCCCCC(=O)[O-]')">Sodium laurate (soap)</button>
+<button onclick="setMol('CC(C)CCCC(C)CCCC(C)CCS(=O)(=O)[O-]')">Alkyl sulfonate</button>
+
+<!-- CATIONIC -->
+<h3>Cationic</h3>
+<button onclick="setMol('CCCCCCCCCCCC[N+](C)(C)C')">Cetrimonium (CTAB base)</button>
+<button onclick="setMol('CCCCCCCCCCCCCCCC[N+](C)(C)C')">Quaternary ammonium (generic)</button>
+
+<!-- NONIONIC -->
+<h3>Nonionic</h3>
+<button onclick="setMol('CCCCCCCCCCOCCO')">Ethoxylated alcohol (simplified)</button>
+<button onclick="setMol('CCCCCCCCCC(O)CO')">Simple glycol surfactant</button>
+
+<!-- AMPHOTERIC -->
+<h3>Amphoteric (Zwitterionic)</h3>
+<button onclick="setMol('CCCCCCCCCCCC(=O)NCCC[N+](C)(C)CC(=O)[O-]')">
+Lauramidopropyl betaine
+</button>
+
+<button onclick="setMol('CCCCCCCCCCCCN(C)CC(=O)[O-]')">
+Amine surfactant
+</button>
+
+<!-- VISUALIZATION -->
+<h3>Visualization</h3>
+
+<button id="btn1" class="disabled" onclick="abrirBolaVareta()">Ball-and-stick</button>
+<button id="btn2" class="disabled" onclick="abrirWireframe()">Wireframe (clean)</button>
+
+<script>
+let smilesSelecionado = null;
+
+// wireframe style
+const estiloWire = encodeURIComponent(
+  "select all; wireframe 0.05; spacefill off;" +
+  "select hydrogen; hide selected;" +
+  "select carbon; label off;" +
+  "select not carbon; label %e;" +
+  "select sulfur; color [204,153,0];"
+);
+
+// selection
+function setMol(smiles) {
+  smilesSelecionado = smiles;
+  atualizarEstado();
+}
+
+function definirMolManual() {
+  const valor = document.getElementById("smiles").value;
+  if (valor.trim() === "") {
+    alert("Enter a valid SMILES.");
+    return;
+  }
+  smilesSelecionado = valor;
+  atualizarEstado();
+}
+
+// state
+function atualizarEstado() {
+  document.getElementById("status").innerHTML =
+    "<b>Selected molecule:</b> " + smilesSelecionado;
+
+  document.getElementById("btn1").classList.remove("disabled");
+  document.getElementById("btn2").classList.remove("disabled");
+}
+
+// visualization
+function abrirBolaVareta() {
+  if (!smilesSelecionado) {
+    alert("Select a molecule first.");
+    return;
+  }
+
+  window.open(
+    "https://chemapps.stolaf.edu/jmol/jmol.php?model=" +
+    encodeURIComponent(smilesSelecionado),
+    "_blank"
+  );
+}
+
+function abrirWireframe() {
+  if (!smilesSelecionado) {
+    alert("Select a molecule first.");
+    return;
+  }
+
+  window.open(
+    "https://chemapps.stolaf.edu/jmol/jmol.php?model=" +
+    encodeURIComponent(smilesSelecionado) +
+    "&script=" + estiloWire,
+    "_blank"
+  );
+}
+</script>
+
+<hr>
+
+<h3>Credits</h3>
+
+<p>
+This molecular visualization tool uses the JSmol/Jmol system, developed by the 
+international scientific community for web-based molecular visualization.
+</p>
+
+<p>
+The structures presented are based on SMILES representations and are intended 
+for educational purposes, with emphasis on the study of surfactants and their 
+structural properties.
+</p>
+
+<p>
+Content selection and organization: Prof. Marcos Autuori<br>
+Interface development: assisted by artificial intelligence<br>
+</p>
+
+<p>
+Molecular visualization tool:<br>
+Jmol / JSmol – Open Source Molecular Viewer<br>
+https://chemapps.stolaf.edu/jmol/
+</p>
+
+</body>
+</html>
